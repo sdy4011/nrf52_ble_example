@@ -1,0 +1,440 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.38.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: zhilong sun, *, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.38.0.0
+Toolchain Path:  D:\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.19
+Assembler:       Armasm.exe V6.19
+Linker/Locator:  ArmLink.exe V6.19
+Library Manager: ArmAr.exe V6.19
+Hex Converter:   FromElf.exe V6.19
+CPU DLL:         
+Dialog DLL:      
+Target DLL:      UL2CM3.DLL V1.164.8.0
+Dialog DLL:      TCM.DLL V1.56.4.0
+ 
+<h2>Project:</h2>
+D:\Nrf52840_projects\nRF5_SDK_17.1.0_ddde560\examples\ble_peripheral\ble_app_our\pca10056\s140\arm5_no_packs\ble_app_template_pca10056_s140.uvprojx
+Project File Date:  08/18/2023
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.19', folder: 'D:\Keil_v5\ARM\ARMCLANG\Bin'
+Build target 'nrf52840_xxaa'
+../../../../../../components/ble/common/ble_advdata.c(40): warning: In file included from...
+../../../../../../components/ble/common/ble_advdata.h(55): error: 'ble.h' file not found
+#include "ble.h"
+         ^~~~~~~
+1 error generated.
+compiling ble_advdata.c...
+../../../../../../components/ble/peer_manager/id_manager.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling id_manager.c...
+../../../../../../components/ble/peer_manager/auth_status_tracker.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling auth_status_tracker.c...
+../../../../../../components/ble/common/ble_conn_params.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling ble_conn_params.c...
+../../../../../../components/ble/peer_manager/gatt_cache_manager.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling gatt_cache_manager.c...
+../../../../../../components/ble/nrf_ble_gatt/nrf_ble_gatt.c(41): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_ble_gatt.c...
+../../../../../../components/boards/boards.c(40): warning: In file included from...
+../../../../../../components/boards/boards.h(43): error: 'nrf_gpio.h' file not found
+#include "nrf_gpio.h"
+         ^~~~~~~~~~~~
+1 error generated.
+compiling boards.c...
+../../../../../../components/ble/nrf_ble_qwr/nrf_ble_qwr.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_ble_qwr.c...
+../../../../../../components/ble/peer_manager/gatts_cache_manager.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling gatts_cache_manager.c...
+../../../../../../components/ble/ble_advertising/ble_advertising.c(40): error: 'sdk_common.h' file not found
+#include  "sdk_common.h"
+          ^~~~~~~~~~~~~~
+1 error generated.
+compiling ble_advertising.c...
+../../../../../../components/ble/common/ble_conn_state.c(40): warning: In file included from...
+../../../../../../components/ble/common/ble_conn_state.h(68): error: 'ble.h' file not found
+#include "ble.h"
+         ^~~~~~~
+1 error generated.
+compiling ble_conn_state.c...
+../../../../../../components/ble/common/ble_srv_common.c(45): warning: In file included from...
+../../../../../../components/ble/common/ble_srv_common.h(53): error: 'ble_types.h' file not found
+#include "ble_types.h"
+         ^~~~~~~~~~~~~
+1 error generated.
+compiling ble_srv_common.c...
+../../../../../../components/libraries/bsp/bsp_btn_ble.c(40): warning: In file included from...
+../../../../../../components/libraries/bsp/bsp_btn_ble.h(59): error: 'ble.h' file not found
+#include "ble.h"
+         ^~~~~~~
+1 error generated.
+compiling bsp_btn_ble.c...
+../../../../../../components/libraries/bsp/bsp.c(40): warning: In file included from...
+../../../../../../components/libraries/bsp/bsp.h(58): error: 'boards.h' file not found
+#include "boards.h"
+         ^~~~~~~~~~
+1 error generated.
+compiling bsp.c...
+../../../main.c(58): error: 'nordic_common.h' file not found
+#include "nordic_common.h"
+         ^~~~~~~~~~~~~~~~~
+1 error generated.
+compiling main.c...
+compiling utf.c...
+../../../../../../components/ble/peer_manager/peer_database.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling peer_database.c...
+../../../../../../components/ble/peer_manager/peer_data_storage.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling peer_data_storage.c...
+../../../../../../components/ble/peer_manager/peer_id.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling peer_id.c...
+../../../../../../components/ble/peer_manager/peer_manager.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling peer_manager.c...
+../../../../../../components/ble/peer_manager/peer_manager_handler.c(40): warning: In file included from...
+../../../../../../components/ble/peer_manager/peer_manager_handler.h(53): error: 'ble.h' file not found
+#include "ble.h"
+         ^~~~~~~
+1 error generated.
+compiling peer_manager_handler.c...
+../../../../../../components/ble/peer_manager/pm_buffer.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling pm_buffer.c...
+../../../../../../components/ble/peer_manager/security_dispatcher.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling security_dispatcher.c...
+../../../../../../components/ble/peer_manager/security_manager.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling security_manager.c...
+../../../../../../integration/nrfx/legacy/nrf_drv_clock.c(41): error: 'nordic_common.h' file not found
+#include <nordic_common.h>
+         ^~~~~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_drv_clock.c...
+../../../../../../integration/nrfx/legacy/nrf_drv_uart.c(41): warning: In file included from...
+../../../../../../integration/nrfx/legacy/nrf_drv_uart.h(44): error: 'nrfx.h' file not found
+#include <nrfx.h>
+         ^~~~~~~~
+1 error generated.
+compiling nrf_drv_uart.c...
+../../../../../../modules/nrfx/soc/nrfx_atomic.c(40): warning: In file included from...
+../../../../../../modules/nrfx/soc/nrfx_atomic.h(44): error: 'nrfx.h' file not found
+#include <nrfx.h>
+         ^~~~~~~~
+1 error generated.
+compiling nrfx_atomic.c...
+../../../../../../modules/nrfx/drivers/src/nrfx_clock.c(41): error: 'nrfx.h' file not found
+#include <nrfx.h>
+         ^~~~~~~~
+1 error generated.
+compiling nrfx_clock.c...
+../../../../../../modules/nrfx/drivers/src/nrfx_gpiote.c(41): error: 'nrfx.h' file not found
+#include <nrfx.h>
+         ^~~~~~~~
+1 error generated.
+compiling nrfx_gpiote.c...
+../../../../../../modules/nrfx/drivers/src/prs/nrfx_prs.c(41): error: 'nrfx.h' file not found
+#include <nrfx.h>
+         ^~~~~~~~
+1 error generated.
+compiling nrfx_prs.c...
+../../../../../../modules/nrfx/drivers/src/nrfx_uart.c(41): error: 'nrfx.h' file not found
+#include <nrfx.h>
+         ^~~~~~~~
+1 error generated.
+compiling nrfx_uart.c...
+../../../../../../modules/nrfx/drivers/src/nrfx_uarte.c(41): error: 'nrfx.h' file not found
+#include <nrfx.h>
+         ^~~~~~~~
+1 error generated.
+compiling nrfx_uarte.c...
+../../../../../../components/libraries/button/app_button.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling app_button.c...
+../../../../../../components/libraries/util/app_error.c(51): warning: In file included from...
+../../../../../../components/libraries/util/app_error.h(57): warning: In file included from...
+../../../../../../components/libraries/util/sdk_errors.h(73): error: 'nrf_error.h' file not found
+#include "nrf_error.h"
+         ^~~~~~~~~~~~~
+1 error generated.
+compiling app_error.c...
+../../../../../../components/libraries/util/app_error_handler_keil.c(40): warning: In file included from...
+../../../../../../components/libraries/util/sdk_common.h(56): error: 'sdk_config.h' file not found
+#include "sdk_config.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling app_error_handler_keil.c...
+../../../../../../components/libraries/util/app_error_weak.c(40): warning: In file included from...
+../../../../../../components/libraries/util/app_error.h(57): warning: In file included from...
+../../../../../../components/libraries/util/sdk_errors.h(73): error: 'nrf_error.h' file not found
+#include "nrf_error.h"
+         ^~~~~~~~~~~~~
+1 error generated.
+compiling app_error_weak.c...
+../../../../../../components/libraries/scheduler/app_scheduler.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling app_scheduler.c...
+../../../../../../components/libraries/timer/app_timer2.c(40): warning: In file included from...
+../../../../../../components/libraries/timer/app_timer.h(69): error: 'sdk_config.h' file not found
+#include "sdk_config.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling app_timer2.c...
+../../../../../../components/libraries/util/app_util_platform.c(40): warning: In file included from...
+../../../../../../components/libraries/util/app_util_platform.h(60): warning: In file included from...
+../../../../../../components/libraries/util/app_error.h(57): warning: In file included from...
+../../../../../../components/libraries/util/sdk_errors.h(73): error: 'nrf_error.h' file not found
+#include "nrf_error.h"
+         ^~~~~~~~~~~~~
+1 error generated.
+compiling app_util_platform.c...
+../../../../../../components/libraries/crc16/crc16.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling crc16.c...
+../../../../../../components/libraries/timer/drv_rtc.c(41): error: 'nrfx.h' file not found
+#include <nrfx.h>
+         ^~~~~~~~
+1 error generated.
+compiling drv_rtc.c...
+../../../../../../components/libraries/fds/fds.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling fds.c...
+../../../../../../components/libraries/hardfault/hardfault_implementation.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling hardfault_implementation.c...
+../../../../../../components/libraries/util/nrf_assert.c(41): warning: In file included from...
+../../../../../../components/libraries/util/app_error.h(57): warning: In file included from...
+../../../../../../components/libraries/util/sdk_errors.h(73): error: 'nrf_error.h' file not found
+#include "nrf_error.h"
+         ^~~~~~~~~~~~~
+1 error generated.
+compiling nrf_assert.c...
+../../../../../../components/libraries/atomic_fifo/nrf_atfifo.c(44): error: 'app_util.h' file not found
+#include "app_util.h"
+         ^~~~~~~~~~~~
+1 error generated.
+compiling nrf_atfifo.c...
+../../../../../../components/libraries/atomic_flags/nrf_atflags.c(42): error: 'nrf_atomic.h' file not found
+#include "nrf_atomic.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_atflags.c...
+../../../../../../components/libraries/atomic/nrf_atomic.c(40): warning: In file included from...
+../../../../../../components/libraries/atomic/nrf_atomic.h(54): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_atomic.c...
+../../../../../../components/libraries/balloc/nrf_balloc.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_balloc.c...
+../../../../../../external/fprintf/nrf_fprintf.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_fprintf.c...
+../../../../../../external/fprintf/nrf_fprintf_format.c(59): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_fprintf_format.c...
+../../../../../../components/libraries/fstorage/nrf_fstorage.c(40): error: 'sdk_config.h' file not found
+#include "sdk_config.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_fstorage.c...
+../../../../../../components/libraries/fstorage/nrf_fstorage_sd.c(41): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_fstorage_sd.c...
+../../../../../../components/libraries/memobj/nrf_memobj.c(41): warning: In file included from...
+../../../../../../components/libraries/memobj/nrf_memobj.h(52): error: 'sdk_errors.h' file not found
+#include "sdk_errors.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_memobj.c...
+../../../../../../components/libraries/pwr_mgmt/nrf_pwr_mgmt.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_pwr_mgmt.c...
+../../../../../../components/libraries/ringbuf/nrf_ringbuf.c(40): warning: In file included from...
+../../../../../../components/libraries/ringbuf/nrf_ringbuf.h(51): error: 'nrf_atomic.h' file not found
+#include "nrf_atomic.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_ringbuf.c...
+../../../../../../components/libraries/experimental_section_vars/nrf_section_iter.c(41): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_section_iter.c...
+../../../../../../components/libraries/sortlist/nrf_sortlist.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_sortlist.c...
+../../../../../../components/libraries/strerror/nrf_strerror.c(41): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_strerror.c...
+compiling sensorsim.c...
+../../../../../../components/libraries/log/src/nrf_log_backend_rtt.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_log_backend_rtt.c...
+../../../../../../components/libraries/log/src/nrf_log_backend_serial.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_log_backend_serial.c...
+../../../../../../components/libraries/log/src/nrf_log_backend_uart.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_log_backend_uart.c...
+../../../../../../components/libraries/log/src/nrf_log_default_backends.c(41): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_log_default_backends.c...
+../../../../../../components/libraries/log/src/nrf_log_frontend.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_log_frontend.c...
+../../../../../../components/libraries/log/src/nrf_log_str_formatter.c(40): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_log_str_formatter.c...
+../../../../../../external/segger_rtt/SEGGER_RTT.c(86): warning: In file included from...
+../../../../../../external/segger_rtt/SEGGER_RTT.h(70): warning: In file included from...
+../../../../../../external/segger_rtt/SEGGER_RTT_Conf.h(70): error: 'nordic_common.h' file not found
+#include "nordic_common.h"
+         ^~~~~~~~~~~~~~~~~
+1 error generated.
+compiling SEGGER_RTT.c...
+../../../../../../external/segger_rtt/SEGGER_RTT_Syscalls_KEIL.c(65): error: 'sdk_config.h' file not found
+#include "sdk_config.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling SEGGER_RTT_Syscalls_KEIL.c...
+../../../../../../external/segger_rtt/SEGGER_RTT_printf.c(64): warning: In file included from...
+../../../../../../external/segger_rtt/SEGGER_RTT.h(70): warning: In file included from...
+../../../../../../external/segger_rtt/SEGGER_RTT_Conf.h(70): error: 'nordic_common.h' file not found
+#include "nordic_common.h"
+         ^~~~~~~~~~~~~~~~~
+1 error generated.
+compiling SEGGER_RTT_printf.c...
+../../../../../../components/softdevice/common/nrf_sdh.c(41): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_sdh.c...
+../../../../../../components/softdevice/common/nrf_sdh_ble.c(41): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_sdh_ble.c...
+../../../../../../components/softdevice/common/nrf_sdh_soc.c(41): error: 'sdk_common.h' file not found
+#include "sdk_common.h"
+         ^~~~~~~~~~~~~~
+1 error generated.
+compiling nrf_sdh_soc.c...
+assembling arm_startup_nrf52840.s...
+compiling system_nrf52.c...
+".\ble_app_template_pca10056_s140.axf" - 69 Error(s), 0 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.6.0.pack
+                ARM.CMSIS.5.6.0
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.3.0
+
+Package Vendor: NordicSemiconductor
+                http://developer.nordicsemi.com/nRF5_SDK/pieces/nRF_DeviceFamilyPack/NordicSemiconductor.nRF_DeviceFamilyPack.8.40.3.pack
+                NordicSemiconductor.nRF_DeviceFamilyPack.8.40.3
+                Nordic Semiconductor nRF ARM devices Device Family Pack with BSD license.
+   * Component: Startup Version: 8.40.3
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/_nrf52840_xxaa
+  D:/Keil_v5_packs/ARM/CMSIS/5.6.0/CMSIS/Core/Include
+  D:/Keil_v5_packs/NordicSemiconductor/nRF_DeviceFamilyPack/8.40.3/Device/Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.3.0
+
+   * Component: NordicSemiconductor::Device:Startup:8.40.3
+      Source file:   Device/Source/system_nrf52.c
+      Source file:   Device/Source/arm/arm_startup_nrf52840.s
+      Include file:  Device/Include/system_nrf52840.h
+      Include file:  Device/Include/system_nrf.h
+Target not created.
+Build Time Elapsed:  00:00:05
+</pre>
+</body>
+</html>

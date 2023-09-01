@@ -1,0 +1,5 @@
+--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ..\..\..\config -I ..\config --reduce_paths
+-I.\RTE\_flash_s140_nrf52_7.2.0_softdevice
+-ID:\Keil_v5_packs\NordicSemiconductor\nRF_DeviceFamilyPack\8.40.3\Device\Include
+-D__UVISION_VERSION="538" -D_RTE_ -DNRF52840_XXAA -D_RTE_ -D__HEAP_SIZE="8192" -D__STACK_SIZE="8192"
+-o ..\..\..\..\..\..\components\softdevice\s140\hex\retarget.o --omf_browse ..\..\..\..\..\..\components\softdevice\s140\hex\retarget.crf --depend ..\..\..\..\..\..\components\softdevice\s140\hex\retarget.d "..\..\..\..\..\..\components\libraries\uart\retarget.c"
