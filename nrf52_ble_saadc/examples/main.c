@@ -132,7 +132,7 @@
 #define SAMPLE_IN_BUFFER 126												 /**<saadc buffer for 6 channel in which 6 bytes are allocated to 1 channel*/
 //#define NRF_SDH_BLE_VS_UUID_COUNT 1
 
-//APP_TIMER_DEF(our_test_id);  /**<my timer test.*/
+APP_TIMER_DEF(our_test_id);  /**<my timer test.*/
 BLE_LBS_DEF(m_lbs);          /**<lbs test. is equivalent to static ble_bls_t m_lbs*/
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
@@ -141,24 +141,24 @@ BLE_ADVERTISING_DEF(m_advertising);                                             
 //temporary data storage;
 //APP_TIMER_DEF(notify_timer);
 
-////saadc timer
-//APP_TIMER_DEF(saadc_timer);
-
 typedef struct
 {
 	uint16_t conn_handle;
 	ble_lbs_t * p_lbs;
 	uint8_t a_data[126];
+	uint8_t a_data_flag;
 }tem_save;
 
 static tem_save ts={0};
 static uint16_t REPREAT_TIMES = 21; /*semg repeat times*/
 static uint16_t CHANNLES			 =6  ;/*semg channels*/
 static uint16_t INTERVAL_TIME  =21  ;/*intervale time*/
+static uint8_t m_interval = 15; /*memset t_data interval time*/
 static uint8_t  a_data[126]={0};
 static nrf_saadc_value_t m_buffer_pool[2][SAMPLE_IN_BUFFER];/*saadc buffer*/
 static uint32_t m_adc_evt_counter = 0; /*sample number*/
 static const nrf_drv_timer_t saadc_timer = NRF_DRV_TIMER_INSTANCE(1);//*saadc tiemr*/
+static const nrfx_timer_t r_timer = NRFX_TIMER_INSTANCE(2); // real timer
 static nrf_ppi_channel_t m_ppi_channel;
 static uint8_t sampling_flag = 0;
 uint64_t start_time = 0;
@@ -166,42 +166,57 @@ uint64_t start_time = 0;
 /*saadc callback*/
 static void saadc_callback(nrfx_saadc_evt_t const*p_evt)
 {
-//	float val;
-//	if(p_evt->type == NRFX_SAADC_EVT_DONE)//*buffer full evt
-//	{
-//		ret_code_t err_code;
-//		err_code = nrfx_saadc_buffer_convert(p_evt->data.done.p_buffer,SAMPLE_IN_BUFFER);
-//		APP_ERROR_CHECK(err_code);
-//		memcpy(ts.a_data,p_evt->data.done.p_buffer,126);
-////	  ble_lbs_on_button_change(ts.conn_handle,ts.p_lbs,ts.a_data);
-//		
-//	}
-//	else
-//	{
-//	}
+	float val;
+	if(p_evt->type == NRFX_SAADC_EVT_DONE)//*buffer full evt
+	{
+		ret_code_t err_code;
+		err_code = nrfx_saadc_buffer_convert(p_evt->data.done.p_buffer,SAMPLE_IN_BUFFER);
+		APP_ERROR_CHECK(err_code);
+		for(int i=0;i<126;i++)
+		{
+			if(p_evt->data.done.p_buffer[i]<0)
+			{
+				p_evt->data.done.p_buffer[i]=0;
+			}
+		}
+		memcpy(ts.a_data,p_evt->data.done.p_buffer,126);
+		ts.a_data_flag =1;//it has been written
+//	  ble_lbs_on_button_change(ts.conn_handle,ts.p_lbs,ts.a_data);
+		
+	}
+	else
+	{
+	}
 }
 
 
 static void saadc_timeout(nrf_timer_event_t evt_type,void *p_context)
 {
-	if(UINT64_MAX !=start_time)
+//	if(UINT64_MAX !=start_time)
+//	{	
+//		start_time++;
+//	}
+//	else{
+//		start_time = 0;
+//	}
+//	switch (evt_type)
+//    {
+//        case NRF_TIMER_EVENT_COMPARE0://???0??
+//            break;
+//        default:
+//            break;
+//    }
+}
+
+static void r_timeout(nrf_timer_event_t evt_type,void *p_context)
+{
+		if(UINT64_MAX !=start_time)
 	{	
 		start_time++;
 	}
-	else{
+		else{
 		start_time = 0;
 	}
-	switch (evt_type)
-    {
-        case NRF_TIMER_EVENT_COMPARE0://???0??
-//					nrfx_saadc_sample();
-//					ble_lbs_on_button_change(ts.conn_handle,ts.p_lbs,ts.a_data);
-//					nrf_delay_ms(1);
-            
-            break;
-        default:
-            break;
-    }
 }
 
 static void saadc_sampling_event_enable(void)
@@ -231,6 +246,16 @@ static void saadc_timer_disable(void)
 		nrf_drv_timer_disable(&saadc_timer);
 }
 	
+static void r_timer_enable(void)
+{
+	nrfx_timer_enable(&r_timer);
+}
+
+static void r_timer_disable(void)
+{
+	nrfx_timer_disable(&r_timer);
+}
+
 static void saadc_sampling_event_init(void)
 {
 	ret_code_t err_code;
@@ -238,10 +263,15 @@ static void saadc_sampling_event_init(void)
 	nrf_drv_timer_config_t timercfg = NRF_DRV_TIMER_DEFAULT_CONFIG;
 	err_code = nrf_drv_timer_init(&saadc_timer,&timercfg,saadc_timeout);
 	APP_ERROR_CHECK(err_code);
-	uint32_t ticks = nrf_drv_timer_ms_to_ticks(&saadc_timer,1);
-	nrf_drv_timer_extended_compare(&saadc_timer,NRF_TIMER_CC_CHANNEL0,ticks,NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,true);
+	uint32_t ticks1 = nrf_drv_timer_ms_to_ticks(&saadc_timer,m_interval);
+	nrf_drv_timer_extended_compare(&saadc_timer,NRF_TIMER_CC_CHANNEL0,ticks1,NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,false);
+
+	err_code = nrf_drv_timer_init(&r_timer,&timercfg,r_timeout);
+	APP_ERROR_CHECK(err_code);
+	uint32_t ticks2 = nrf_drv_timer_ms_to_ticks(&r_timer,1);
+	nrf_drv_timer_extended_compare(&r_timer,NRF_TIMER_CC_CHANNEL0,ticks2,NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,true);
 	
-//	err_code = nrf_drv_ppi_init();
+	err_code = nrf_drv_ppi_init();
 //	if(err_code == NRF_SUCCESS)
 //	{
 //		NRF_LOG_INFO("ppi init succeed");
@@ -250,16 +280,16 @@ static void saadc_sampling_event_init(void)
 //	{
 //		NRF_LOG_INFO("ppi init failed");
 //	}
-//	APP_ERROR_CHECK(err_code);
-//	//set task and event for ppi channel
-//	uint32_t timer_compare_event_addr = nrf_drv_timer_compare_event_address_get(&saadc_timer,NRF_TIMER_CC_CHANNEL0);
-//	uint32_t saadc_sample_event_addr = nrf_drv_saadc_sample_task_get();
-//	//get a PPI channel 
-//	err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel);
-//	APP_ERROR_CHECK(err_code);
-//	//assign addrs of task and event for ppi channel
-//	err_code = nrf_drv_ppi_channel_assign(m_ppi_channel,timer_compare_event_addr,saadc_sample_event_addr);
-//	APP_ERROR_CHECK(err_code);
+	APP_ERROR_CHECK(err_code);
+	//set task and event for ppi channel
+	uint32_t timer_compare_event_addr = nrf_drv_timer_compare_event_address_get(&saadc_timer,NRF_TIMER_CC_CHANNEL0);
+	uint32_t saadc_sample_event_addr = nrf_drv_saadc_sample_task_get();
+	//get a PPI channel 
+	err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel);
+	APP_ERROR_CHECK(err_code);
+	//assign addrs of task and event for ppi channel
+	err_code = nrf_drv_ppi_channel_assign(m_ppi_channel,timer_compare_event_addr,saadc_sample_event_addr);
+	APP_ERROR_CHECK(err_code);
 	
 }
 	
@@ -301,11 +331,11 @@ static void saadc_init(void)
 	APP_ERROR_CHECK(err_code);
 	err_code = nrfx_saadc_channel_init(5,&a5);
 	APP_ERROR_CHECK(err_code);
-//	err_code = nrfx_saadc_buffer_convert(m_buffer_pool[0],SAMPLE_IN_BUFFER);
-//	APP_ERROR_CHECK(err_code);
-//	err_code = nrfx_saadc_buffer_convert(m_buffer_pool[1],SAMPLE_IN_BUFFER);
-//	APP_ERROR_CHECK(err_code);
-	NRF_LOG_INFO("saadc init succeed");
+	err_code = nrfx_saadc_buffer_convert(m_buffer_pool[0],SAMPLE_IN_BUFFER);
+	APP_ERROR_CHECK(err_code);
+	err_code = nrfx_saadc_buffer_convert(m_buffer_pool[1],SAMPLE_IN_BUFFER);
+	APP_ERROR_CHECK(err_code);
+//	NRF_LOG_INFO("saadc init succeed");
 }
 	
 	
@@ -315,46 +345,46 @@ static void timeout(void *p)
 {
 	UNUSED_PARAMETER(p);
 	ret_code_t err_code;
-//	NRF_LOG_INFO("enter notify timer");
-//		nrfx_saadc_sample(); // start a saadc sample
-	uint8_t val_a0;
-	uint8_t val_a1;
-	uint8_t val_a2;
-	uint8_t val_a3;
-	uint8_t val_a4;
-	uint8_t val_a5;
-	//read ana value 
-	if(m_adc_evt_counter<126)
-	{
-		uint32_t o0 = bsp_board_a_read(0);
-		val_a0 = o0*255;//a0
-//		NRF_LOG_INFO("original ao:%#x,after ao:%#x",o0,val_a0);
-		val_a1 = bsp_board_a_read(1);//a1
-		val_a2 = bsp_board_a_read(2);//a2
-		val_a3 = bsp_board_a_read(3);//a3
-		val_a4 = bsp_board_a_read(4);//a4
-		val_a5 = bsp_board_a_read(5);//a5
-		ts.a_data[m_adc_evt_counter++]=val_a0;
-		ts.a_data[m_adc_evt_counter++]=val_a1;
-		ts.a_data[m_adc_evt_counter++]=val_a2;
-		ts.a_data[m_adc_evt_counter++]=val_a3;
-		ts.a_data[m_adc_evt_counter++]=val_a4;
-		ts.a_data[m_adc_evt_counter++]=val_a5;
-		NRF_LOG_INFO("a0:%d,a1:%d,a2:%d,a3:%d,a4:%d,a5:%d",val_a0,val_a1,val_a2,val_a3,val_a4,val_a5);
-	}
-	else
-	{
-		m_adc_evt_counter = 0;
-	}
-	err_code = ble_lbs_on_button_change(ts.conn_handle,ts.p_lbs,ts.a_data);
-	if(err_code != NRF_SUCCESS)
-	{
-		char a[10];
-		int tem = (int)err_code;
-		sprintf(a,"%#x",tem);
-		
-		NRF_LOG_INFO(a);
-	}
+////	NRF_LOG_INFO("enter notify timer");
+////		nrfx_saadc_sample(); // start a saadc sample
+//	uint8_t val_a0;
+//	uint8_t val_a1;
+//	uint8_t val_a2;
+//	uint8_t val_a3;
+//	uint8_t val_a4;
+//	uint8_t val_a5;
+//	//read ana value 
+//	if(m_adc_evt_counter<126)
+//	{
+//		uint32_t o0 = bsp_board_a_read(0);
+//		val_a0 = o0*255;//a0
+////		NRF_LOG_INFO("original ao:%#x,after ao:%#x",o0,val_a0);
+//		val_a1 = bsp_board_a_read(1);//a1
+//		val_a2 = bsp_board_a_read(2);//a2
+//		val_a3 = bsp_board_a_read(3);//a3
+//		val_a4 = bsp_board_a_read(4);//a4
+//		val_a5 = bsp_board_a_read(5);//a5
+//		ts.a_data[m_adc_evt_counter++]=val_a0;
+//		ts.a_data[m_adc_evt_counter++]=val_a1;
+//		ts.a_data[m_adc_evt_counter++]=val_a2;
+//		ts.a_data[m_adc_evt_counter++]=val_a3;
+//		ts.a_data[m_adc_evt_counter++]=val_a4;
+//		ts.a_data[m_adc_evt_counter++]=val_a5;
+//		NRF_LOG_INFO("a0:%d,a1:%d,a2:%d,a3:%d,a4:%d,a5:%d",val_a0,val_a1,val_a2,val_a3,val_a4,val_a5);
+//	}
+//	else
+//	{
+//		m_adc_evt_counter = 0;
+//	}
+//	err_code = ble_lbs_on_button_change(ts.conn_handle,ts.p_lbs,ts.a_data);
+//	if(err_code != NRF_SUCCESS)
+//	{
+//		char a[10];
+//		int tem = (int)err_code;
+//		sprintf(a,"%#x",tem);
+//		
+//		NRF_LOG_INFO(a);
+//	}
 }
 
 
@@ -419,7 +449,14 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 static void timeout_test(void *p)
 {
 	UNUSED_PARAMETER(p);
-	start_time++;
+	if(ts.a_data_flag)
+	{
+		
+		ret_code_t err_code;
+		err_code = ble_lbs_on_button_change(ts.conn_handle,ts.p_lbs,ts.a_data);
+//		NRF_LOG_INFO("err:%d",err_code);
+	}
+
 	//deal
 //	NRF_LOG_INFO("??");
 }
@@ -438,9 +475,9 @@ static void timers_init(void)
     // Initialize timer module.
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
-//		err_code = app_timer_create(&our_test_id,APP_TIMER_MODE_REPEATED,timeout_test);
+		err_code = app_timer_create(&our_test_id,APP_TIMER_MODE_REPEATED,timeout_test);
 ////		
-//		APP_ERROR_CHECK(err_code);
+		APP_ERROR_CHECK(err_code);
 //		err_code =  app_timer_create(&notify_timer,APP_TIMER_MODE_REPEATED,timeout);
 //		APP_ERROR_CHECK(err_code);
 //	  err_code = app_timer_create(&saadc_timer,APP_TIMER_MODE_REPEATED,saadc_timeout_callback);
@@ -571,10 +608,8 @@ static void led_write_handler(ble_lbs_t * p_lbs, ble_evt_t const * p_ble_evt)
 				memset(&ts,0,sizeof(ts));
 				ts.conn_handle = conn_handle;
 				ts.p_lbs = p_lbs;
-//				ts.button_state = 0x03;		
-//				app_timer_start(notify_timer,APP_TIMER_TICKS(1000),NULL); //start timer
-				saadc_timer_enable();
-//				saadc_sampling_event_enable();	
+				saadc_timer_enable();//start ppi to scan a0-a5 and memset ts.data
+				app_timer_start(our_test_id,APP_TIMER_TICKS(INTERVAL_TIME),NULL);//start notify timer
 				sampling_flag = 1;
 //				bsp_board_led_on(1);
 //				NRF_LOG_INFO("REV LED ON");
@@ -582,20 +617,18 @@ static void led_write_handler(ble_lbs_t * p_lbs, ble_evt_t const * p_ble_evt)
 			else if(p_evt_write->data[0]==0x02)
 			{
 				//other command
-//				app_timer_stop(notify_timer);
-//				saadc_sampling_event_disable();
+				ts.a_data_flag = 0;
+				app_timer_stop(our_test_id);
 				saadc_timer_disable();
-//				saadc_sampling_event_disable();	
 				sampling_flag = 0;
 //				bsp_board_led_off(1);
 //				NRF_LOG_INFO("REV LED OFF");
 			}
 			else
 			{
-//				app_timer_stop(notify_timer);
-//				saadc_sampling_event_disable();
+				ts.a_data_flag = 0;
+				app_timer_stop(our_test_id);
 				saadc_timer_disable();
-//				saadc_sampling_event_disable();	
 				sampling_flag = 0;
 //				bsp_board_led_off(1);
 //				NRF_LOG_INFO("REV LED OFF");
@@ -612,11 +645,10 @@ static void notify_handler(uint16_t conn_handle,ble_lbs_t *p_lbs,uint8_t led_sta
 /*my disconnect handler*/
 static void disconnect_handler(ble_lbs_t * p_lbs, ble_evt_t const * p_ble_evt)
 {
-//	app_timer_stop(notify_timer);
-//	bsp_board_led_off(1);
-		saadc_timer_disable();
-//				saadc_sampling_event_enable();	
-		sampling_flag = 1;
+	ts.a_data_flag = 0;
+	app_timer_stop(our_test_id);
+	saadc_timer_disable();
+	sampling_flag = 0;
 }
 /**@brief Function for initializing services that will be used by the application.
  */
@@ -1131,79 +1163,84 @@ int main(void)
     // Start execution.
     NRF_LOG_INFO("Template example started.");
 //    application_timers_start();
-
     advertising_start(erase_bonds);
-//		ret_code_t err_code;
-//		nrf_drv_timer_config_t timercfg = NRF_DRV_TIMER_DEFAULT_CONFIG;
-//		err_code = nrf_drv_timer_init(&saadc_timer,&timercfg,saadc_timeout);
-//		APP_ERROR_CHECK(err_code);
-//		uint32_t ticks = nrf_drv_timer_ms_to_ticks(&saadc_timer,500);
-//		nrf_drv_timer_extended_compare(&saadc_timer,NRF_TIMER_CC_CHANNEL0,ticks,NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,true);
-//		nrf_drv_timer_enable(&saadc_timer);
-//		
 		saadc_sampling_event_init();
 		saadc_init();
-//		saadc_sampling_event_enable();
-
-//		saadc_init();//saadc init 
-//		nrf_gpio_cfg_input(2,NRF_GPIO_PIN_PULLUP);//
-    // Enter main loop.
-		uint64_t pre_t = 0;
-		uint64_t cur_t = start_time;
-		nrf_saadc_value_t a0;
-		nrf_saadc_value_t a1;
-		nrf_saadc_value_t a2;
-		nrf_saadc_value_t a3;
-		nrf_saadc_value_t a4;
-		nrf_saadc_value_t a5;
-		uint8_t rp = 0;
-		ret_code_t err_code;
+		saadc_sampling_event_enable();
+		r_timer_enable();//start system time
+		
+//		uint64_t pre_t = 0;
+//		uint64_t cur_t = start_time;
+//		nrf_saadc_value_t a0;
+//		nrf_saadc_value_t a1;
+//		nrf_saadc_value_t a2;
+//		nrf_saadc_value_t a3;
+//		nrf_saadc_value_t a4;
+//		nrf_saadc_value_t a5;
+//		uint8_t rp = 0;
+//		ret_code_t err_code;
+//		//test rate 
+//		uint8_t 	test_data[126]={0};
+//		uint32_t t_len_sent = 0;
+//		uint64_t c_t = 0;
+//		uint8_t f_t = 0;
     for (;;)
     {
-//					nrfx_saadc_sample();
-//					nrf_delay_ms(1);
         idle_state_handle();
-//			nrfx_saadc_sample();
-			while(sampling_flag)
-			{		
-				idle_state_handle();
-				if(rp!=SAMPLE_IN_BUFFER)
-				{
-					nrfx_saadc_sample_convert(0,&a0);
-					nrfx_saadc_sample_convert(1,&a1);
-					nrfx_saadc_sample_convert(2,&a2);
-					nrfx_saadc_sample_convert(3,&a3);
-					nrfx_saadc_sample_convert(4,&a4);
-					nrfx_saadc_sample_convert(5,&a5);
-					if(a0<0)a0=0;
-					if(a1<0)a1=0;
-					if(a2<0)a2=0;
-					if(a3<0)a3=0;
-					if(a4<0)a4=0;
-					if(a5<0)a5=0;
-					ts.a_data[rp++]=a0;
-					ts.a_data[rp++]=a1;
-					ts.a_data[rp++]=a2;
-					ts.a_data[rp++]=a3;
-					ts.a_data[rp++]=a4;
-					ts.a_data[rp++]=a5;
-//					NRF_LOG_INFO("a0:%d,a1:%d,a2:%d,a3:%d,a4:%d,a5:%d",a0,a1,a2,a3,a4,a5);
-				}
-				else
-				{
-//				nrfx_saadc_sample();
-					cur_t = start_time;
-					while(cur_t-pre_t<INTERVAL_TIME)
-					{
-						cur_t = start_time;
-					}
-					pre_t = start_time;
-					err_code = ble_lbs_on_button_change(ts.conn_handle,ts.p_lbs,ts.a_data);
-//						NRF_LOG_INFO("errcode :%d",err_code);
-					rp = 0;
-				}
+				
+//			while(sampling_flag)
+//			{		
+//				if(f_t ==0)
+//				{
+//					c_t = start_time;
+//					f_t++;
+//				}
+//				idle_state_handle();
+//				err_code = ble_lbs_on_button_change(ts.conn_handle,ts.p_lbs,ts.a_data);
+//				if (err_code == NRF_SUCCESS)
+//				{
+//					t_len_sent+=126;
+//				}
+//				NRF_LOG_INFO("time:%d,bytes send:%d Bytes,avg speed:%d KB/s",start_time,t_len_sent,t_len_sent/(start_time-c_t));
+//			}
+		/********************************* real ***********************************/		
+//				if(rp!=SAMPLE_IN_BUFFER)
+//				{
+//					nrfx_saadc_sample_convert(0,&a0);
+//					nrfx_saadc_sample_convert(1,&a1);
+//					nrfx_saadc_sample_convert(2,&a2);
+//					nrfx_saadc_sample_convert(3,&a3);
+//					nrfx_saadc_sample_convert(4,&a4);
+//					nrfx_saadc_sample_convert(5,&a5);
+//					if(a0<0)a0=0;
+//					if(a1<0)a1=0;
+//					if(a2<0)a2=0;
+//					if(a3<0)a3=0;
+//					if(a4<0)a4=0;
+//					if(a5<0)a5=0;
+//					ts.a_data[rp++]=a0;
+//					ts.a_data[rp++]=a1;
+//					ts.a_data[rp++]=a2;
+//					ts.a_data[rp++]=a3;
+//					ts.a_data[rp++]=a4;
+//					ts.a_data[rp++]=a5;
+////					NRF_LOG_INFO("a0:%d,a1:%d,a2:%d,a3:%d,a4:%d,a5:%d",a0,a1,a2,a3,a4,a5);
+//				}
+//				else
+//				{
+////				nrfx_saadc_sample();
+//					cur_t = start_time;
+//					while(cur_t-pre_t<INTERVAL_TIME)
+//					{
+//						cur_t = start_time;
+//					}
+//					pre_t = start_time;
+//					err_code = ble_lbs_on_button_change(ts.conn_handle,ts.p_lbs,ts.a_data);
+////						NRF_LOG_INFO("errcode :%d",err_code);
+//					rp = 0;
+//				}
 
-			}
+//			}
     }
 }
 
